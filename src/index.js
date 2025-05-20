@@ -3,7 +3,7 @@ import './components/headerUi/headerUi.js'
 import './components/productUi/productUi.js'
 import './components/dm/product-dm/productDm.js'
 
-export class Index extends LitElement { // TODO: Cambiarle el nombre lego
+export class Index extends LitElement {
   static get properties() {
     return {
       productToRender: { type: Object },
@@ -13,7 +13,7 @@ export class Index extends LitElement { // TODO: Cambiarle el nombre lego
 
   constructor() {
     super()
-    this._host = "https://api.escuelajs.co/api/v1/products/221";
+    this._host = "https://api.escuelajs.co/api/v1/products/31";
     this.errorMessage = '';
     this.productToRender = {};
   }
