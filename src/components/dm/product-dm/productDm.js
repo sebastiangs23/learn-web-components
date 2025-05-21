@@ -2,7 +2,6 @@ import { LitElement } from 'lit'
 
 export class ProductDm extends LitElement {
 
-    //Properties come first
     static get properties(){
         return {
             host: {type: String},
@@ -22,7 +21,7 @@ export class ProductDm extends LitElement {
                 alert('El host deberia existir antes');
                 return
             }
-            //throw new Error('test: se rompio')
+
             const response = await fetch(this.host);
 
             if(!response.ok) {
@@ -30,9 +29,8 @@ export class ProductDm extends LitElement {
             }
 
             const data = await response.json();
-            this.product = data;
+            this.product = data[0];
 
-            //Se le tiene que informar al padre de la respuesta
             this.dispatchEvent(new CustomEvent('product-dm-success', {
                 detail: { products: this.product },
                 bubbles: true,

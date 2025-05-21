@@ -2,6 +2,7 @@ import { LitElement, css, html } from 'lit'
 import './components/headerUi/headerUi.js'
 import './components/productUi/productUi.js'
 import './components/dm/product-dm/productDm.js'
+import './components/footerUi/footerUi.js'
 
 export class Index extends LitElement {
   static get properties() {
@@ -13,7 +14,7 @@ export class Index extends LitElement {
 
   constructor() {
     super()
-    this._host = "https://api.escuelajs.co/api/v1/products/31";
+    this._host = "https://api.escuelajs.co/api/v1/products";
     this.errorMessage = '';
     this.productToRender = {};
   }
@@ -51,8 +52,10 @@ export class Index extends LitElement {
         <header-ui></header-ui>
 
         <product-ui
+          .productId=${this.productToRender.id}
           .images=${this.productToRender ? this.productToRender.images : []}
           .discount=${true}
+          .showAddButton=${true}
           real-price=${this.productToRender.price}
           >
           <h2 slot="campain-name">${this.productToRender ? this.productToRender.title : ''} </h2>
@@ -60,12 +63,15 @@ export class Index extends LitElement {
             ${this.productToRender.description}
           </p>
         </product-ui>
+
+        <footer-ui></footer-ui>
+
       </div>
     `
   }
 
   static get styles() {
-    return css `
+    return css`
       .product-ui-description {
         color: gray;
       }

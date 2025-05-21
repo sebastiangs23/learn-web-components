@@ -1,139 +1,62 @@
-import { LitElement, html, css } from "lit";
+import { LitElement, html } from "lit";
+import "../ModalcartUi/ModalCartUi";
 import cart from '../../assets/svgs/icon-cart.svg';
 import avatar from '../../assets/images/image-avatar.png';
+import { headerStyle } from "./headerCss";
 
 export class HeaderUi extends LitElement {
-    static get styles() {
-        return css`
-      .header {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        
-        width: 100%;
-        padding: 0 20px;
-        position: relative;
+    static get properties(){
+      return {
+        _modalOpen: { type: Boolean },
+        _cartItems: { type: Array }
       }
-
-      .header__title {
-        font-size: 2.25rem;
-        font-family: "Kumbh Sans", sans-serif;
-        font-weight: 700;
-        margin-right: 50px;
-      }
-      
-      .header__ul {
-        display: flex;
-        list-style: none;
-        align-items: center;
-        gap: 20px;
-        margin-right: 300px;
-        padding: 0;
-      }
-
-      .header__ul li {
-        font-family: "Kumbh Sans", sans-serif;
-        font-weight: 400;
-        color: gray;
-        cursor: pointer;
-      }
-
-      .header__cart-container {
-        display: flex;
-        align-items: center;
-        margin-left: 20px;
-      }
-
-      .header__cart {
-        height: 25px;
-        width: 25px;
-      }
-
-      .header__avatar {
-        height: 40px;
-        width: 40px;
-        border-radius: 50%;
-        margin-left: 20px;
-      }
-
-      .header__divider {
-        border: none;
-        height: 1px;
-        background-color: #ccc;
-        margin: 10px 0;
-        width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .header__hamburger {
-        display: none;
-        flex-direction: column;
-        gap: 5px;
-        cursor: pointer;
-        position: relative;
-      }
-
-      .header__hamburger div {
-        width: 25px;
-        height: 3px;
-        background-color: black;
-        border-radius: 2px;
-      }
-
-      @media (max-width: 768px) {
-        .header__ul {
-          display: none;
-          position: absolute;
-          top: 95px; /* debajo del hamburgues */
-          left: 0;
-          background: white;
-          box-shadow: 0 4px 8px rgb(0 0 0 / 0.1);
-          padding: 10px;
-          border-radius: 8px;
-          flex-direction: column;
-          gap: 10px;
-          z-index: 999;
-          min-width: 150px;
-        }
-
-        .header__ul.mobile-open {
-          display: flex;
-          align-items: flex-start;
-        }
-
-        .header__hamburger {
-          display: flex;
-          margin-left: 40px;
-        }
-
-        .header__avatar {
-          height: 40px;
-          width: 40px;
-          margin-left: 10px;
-        }
-
-        .header__title {
-          font-size: 2.5rem;
-          margin-left: 25px;
-        }
-      }
-    `;
     }
 
     constructor() {
         super();
-        this.menuOpen = false;
+        this._menuOpen = false;
+        this._modalOpen = false;
+        this._cartItems = [];
     }
 
     _toggleMenu() {
-        this.menuOpen = !this.menuOpen;
+        this._menuOpen = !this._menuOpen;
         this.requestUpdate();
     }
 
+    _openModal(){
+      this._cartItems =  JSON.parse(localStorage.getItem('cartItems'));
+      console.log(this._cartItems);
+      this._modalOpen = true;
+      this.requestUpdate();
+    }
+
+    
+    _handleAdd() {
+      
+    }
+  
+    _handleCancel() {
+      this._modalOpen = false;
+    }
+
     render() {
+      const firstItem = this._cartItems && this._cartItems.length > 0 ? this._cartItems[0] : null;
+
         return html`
-      <header class="header-container header--theme">
+        <header class="header-container header--theme">
+          <modal-cart
+            .open=${this._modalOpen}
+            .image=${firstItem ? firstItem.image : ''}
+            .quantity=${firstItem ? firstItem.quantity : 0}
+            .totalPrice=${firstItem ? firstItem.totalPrice : 0}
+            .showAddButton=${false}
+            @modal-add=${this._handleAdd}
+            @modal-cancel=${this._handleCancel}
+          >
+          <h3 slot="title">Tu carrito: </h3>
+        </modal-cart>
+
         <div class="header">
 
           <div class="header__hamburger" @click=${this._toggleMenu}>
@@ -144,26 +67,55 @@ export class HeaderUi extends LitElement {
 
           <p class="header__title">sneakers</p>
 
-          <ul class="header__ul ${this.menuOpen ? 'mobile-open' : ''}">
-            <li>Collections</li>
-            <li>Men</li>
-            <li>Women</li>
-            <li>About</li>
-            <li>Contact</li>
+          <ul class="header__ul ${this._menuOpen ? 'mobile-open' : ''}">
+            <li>
+              <a href="#collections" >
+                Collections
+              </a>
+            </li>
+
+            <li>
+              <a href="#men" >
+                Men
+              </a>
+            </li>
+            
+            <li>
+              <a href="#woman" >
+                Woman
+              </a>
+            </li>
+
+            <li>
+              <a href="#about" >
+                About
+              </a>
+            </li>
+
+            <li>
+              <a href="#contact" >
+                Contact
+              </a>
+            </li>
+
           </ul>
 
-          <div class="header__cart-container">
-            <img class="header__cart" src=${cart} />
+          <div class="header__cart-container" >
+            <img class="header__cart" @click=${this._openModal} src=${cart} alt="icono del cart"/>
           </div>
 
           <figure class="header__avatar-container">
-            <img class="header__avatar" src=${avatar} />
+            <img class="header__avatar" src=${avatar} alt="avatar del usuario" />
           </figure>
         </div>
 
         <hr class="header__divider" />
       </header>
     `;
+    }
+
+    static get styles() {
+      return headerStyle
     }
 }
 

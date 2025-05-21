@@ -15,7 +15,6 @@ export const productStyle = css`
         margin: auto;
       }
 
-      /* Imagen principal */
       .section__row_1 {
         flex: 1;
       }
@@ -74,7 +73,6 @@ export const productStyle = css`
         right: 5px;
       }
 
-     
       .carousel-btn:hover {
         background-color: hsl(26, 100%, 40%);
       }
@@ -86,6 +84,7 @@ export const productStyle = css`
         object-fit: cover;
         opacity: 0.8;
         border: 2px solid transparent;
+        opacity: 50%;
         transition: all 0.3s ease;
         cursor: pointer;
       }
@@ -95,7 +94,6 @@ export const productStyle = css`
         border-color: hsl(26, 100%, 55%);
       }
 
-      /* Info / descripción */
       .section__row_2 {
         flex: 1;
         display: flex;
@@ -126,7 +124,6 @@ export const productStyle = css`
         display: block;
       }
 
-      /* Precio */
       .price__section {
         display: flex;
         align-items: center;
@@ -228,7 +225,6 @@ export const productStyle = css`
         background-color: hsl(26, 100%, 40%);
       }
 
-      /* Responsive - móviles */
       @media (max-width: 768px) {
         section.section {
           flex-direction: column;
@@ -247,6 +243,10 @@ export const productStyle = css`
         .section__row_1-img-mini {
           width: 100%;
           height: 100%;
+        }
+
+        .section__row_2-title {
+          font-size: 1.2rem;
         }
 
         .section__row_2-controls {

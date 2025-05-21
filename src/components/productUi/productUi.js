@@ -1,4 +1,4 @@
-import { LitElement, html, css } from "lit"
+import { LitElement, html } from "lit"
 import cart from '../../assets/svgs/icon-cart.svg'
 import { getCurrentWidth, subscribe } from "../common/windowSize"
 import '../ModalcartUi/ModalCartUi'
@@ -7,6 +7,7 @@ import { productStyle } from "./productCss"
 export class ProductUi extends LitElement {
   static get properties() {
     return {
+      productId: {type: Number },
       images: { type: Array, attribute: 'images' },
       realPrice: { type: Number, attribute: 'real-price' },
       discount: { type: Boolean },
@@ -22,10 +23,12 @@ export class ProductUi extends LitElement {
 
   constructor() {
     super();
+    this.productId = 0;
     this.images = [];
     this.realPrice = 0;
     this.discount = false;
-    this._counter = 0;
+
+    this._counter = 1;
     this._mainImage = '';
     this._selectedImage = '';
     this._modalOpen = false;
@@ -60,9 +63,11 @@ export class ProductUi extends LitElement {
   }
 
   _decrement() {
-    if (this._counter > 0) {
+    if (this._counter > 1) {
       this._counter--;
       this.requestUpdate();
+    }else {
+      alert('No es posible ejecutar esta acción :)');
     }
   }
 
@@ -75,8 +80,22 @@ export class ProductUi extends LitElement {
     this._modalOpen = true;
   }
 
-  _handlePay() {
-    console.log("Pagando...");
+  _handleAdd() {
+    //TODO: Revisar pq no me deja instalar dependencias
+    const item = {
+      productId: this.productId,
+      image: this._mainImage,
+      quantity: this._counter,
+      totalPrice: this.discount
+        ? (this.realPrice / 2) * this._counter
+        : this.realPrice * this._counter
+    }
+
+    const cart = JSON.parse(localStorage.getItem('cartItem')) || [];
+    cart.push(item);
+    localStorage.setItem('cartItems', JSON.stringify(cart));
+
+    alert('Se realizo de manera exitosa el pago!'); 
   }
 
   _handleCancel() {
@@ -101,17 +120,12 @@ export class ProductUi extends LitElement {
     this._set_mainImage(this.images[this._carouselIndex]);
   }
 
-  static get styles() {
-    return [
-        productStyle,
-    ]
-  }
-
   render() {
     const discountedPrice = (this.realPrice / 2).toFixed(2);
 
     return html`
       <section class="section">
+
         <div class="section__row_1">
             ${this._currentWidth > 768 ? 
                 html `
@@ -225,11 +239,17 @@ export class ProductUi extends LitElement {
           .totalPrice=${this.discount
             ? (this.realPrice / 2) * this._counter
             : this.realPrice * this._counter}
-          @modal-pay=${this._handlePay}
+          @modal-add=${this._handleAdd}
           @modal-cancel=${this._handleCancel}
-        ></modal-cart>
+        >
+            <h3 slot="title">Confirmar agregar al carrito: </h3>
+        </modal-cart>
       </section>
     `;
+  }
+
+  static get styles() {
+    return productStyle
   }
 }
 
