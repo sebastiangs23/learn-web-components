@@ -33,6 +33,14 @@ export const headerStyle = css`
         font-weight: 400;
         color: gray;
         cursor: pointer;
+        border-bottom: 1px solid transparent;
+        padding-bottom: 2px;
+        transition: color .2s, border-color .2s;
+      }
+
+      .header__ul li:hover a {
+        color: #ff871e;
+        border-bottom-color: #ff871e; 
       }
 
       .header__cart-container {

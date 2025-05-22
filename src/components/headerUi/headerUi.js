@@ -3,6 +3,7 @@ import "../ModalcartUi/ModalCartUi";
 import cart from '../../assets/svgs/icon-cart.svg';
 import avatar from '../../assets/images/image-avatar.png';
 import { headerStyle } from "./headerCss";
+import { header } from "../../utils/constants/constants";
 
 export class HeaderUi extends LitElement {
     static get properties(){
@@ -19,6 +20,20 @@ export class HeaderUi extends LitElement {
         this._cartItems = [];
     }
 
+    firstUpdated() {
+      const contactLink = this.shadowRoot.querySelector('a[href="#contact"]');
+      if (contactLink) {
+        contactLink.addEventListener('click', e => {
+          e.preventDefault();
+          this.dispatchEvent(new CustomEvent('scroll-to-contact', {
+            bubbles: true,
+            composed: true,
+          }));
+        });
+      }
+    }
+    
+
     _toggleMenu() {
         this._menuOpen = !this._menuOpen;
         this.requestUpdate();
@@ -31,7 +46,6 @@ export class HeaderUi extends LitElement {
       this.requestUpdate();
     }
 
-    
     _handleAdd() {
       
     }
@@ -68,37 +82,13 @@ export class HeaderUi extends LitElement {
           <p class="header__title">sneakers</p>
 
           <ul class="header__ul ${this._menuOpen ? 'mobile-open' : ''}">
-            <li>
-              <a href="#collections" >
-                Collections
-              </a>
-            </li>
-
-            <li>
-              <a href="#men" >
-                Men
-              </a>
-            </li>
-            
-            <li>
-              <a href="#woman" >
-                Woman
-              </a>
-            </li>
-
-            <li>
-              <a href="#about" >
-                About
-              </a>
-            </li>
-
-            <li>
-              <a href="#contact" >
-                Contact
-              </a>
-            </li>
-
-          </ul>
+            ${header.map((item) => html` 
+                  <li>
+                    <a href=${item.href}> ${item.name} </a>
+                  </li>
+                `
+            )}
+          </ul> 
 
           <div class="header__cart-container" >
             <img class="header__cart" @click=${this._openModal} src=${cart} alt="icono del cart"/>

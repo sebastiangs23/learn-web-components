@@ -44,6 +44,14 @@ export class Index extends LitElement {
     this.errorMessage = event.detail.message || 'Error desconocido';
   }
 
+  connectedCallback() {
+    super.connectedCallback();
+    this.addEventListener('scroll-to-contact', () => {
+      const footer = this.shadowRoot.querySelector('footer-ui') || document.querySelector('footer-ui');
+      if (footer) footer.scrollIntoView({ behavior: 'smooth' });
+    });
+  }
+
   render() {
     return html`
       <div>

@@ -24,9 +24,11 @@ export const productStyle = css`
         border-radius: 15px;
         object-fit: cover;
         max-height: 400px;
+        cursor: zoom-in;
       }
 
-      /* Miniaturas y carrusel */
+      /*__________________________
+      |  MINIATURAS Y CARROUSEL */
       .section__row_1-img-mini-container {
         display: flex;
         justify-content: center;
@@ -224,6 +226,81 @@ export const productStyle = css`
       .section__row_2-button:hover {
         background-color: hsl(26, 100%, 40%);
       }
+
+      /*____________
+      | LIGHT-BOX */
+      .lightbox-overlay {
+        position: fixed; 
+        inset: 0;       
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+      
+      .lightbox-close {
+        margin-left: 580px;
+        top: 1rem;
+        background: none;
+        border: none;
+        font-size: 2.5rem;
+        color: white;
+        cursor: pointer;
+        z-index: 1001; 
+      }
+
+      .lightbox-content {
+        position: relative;
+        display: flex;
+        align-items: center;
+      }
+
+      .lightbox-img {
+        max-width: 600px;
+        max-height: 80vh;
+        border-radius: 8px;
+      }
+
+      .arrow {
+        background: white;
+        border: none;
+        border-radius: 50%;
+        width: 2.5rem; height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+        cursor: pointer;
+      }
+
+      .arrow.left  { margin-right: 1rem; }
+      .arrow.right { margin-left: 1rem; }
+
+      .lightbox-thumbs {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .thumb {
+        width: 80px; height: 80px;
+        border: 2px solid transparent;
+        border-radius: 5px;
+        overflow: hidden;
+        cursor: pointer;
+      }
+
+      .thumb.selected {
+        border-color: #ff871e;
+      }
+
+      .thumb img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+      }
+
 
       @media (max-width: 768px) {
         section.section {

@@ -1,6 +1,6 @@
 import { LitElement, html } from "lit"
 import cart from '../../assets/svgs/icon-cart.svg'
-import { getCurrentWidth, subscribe } from "../common/windowSize"
+import { getCurrentWidth, subscribe } from "../../utils/functions/windowSize"
 import '../ModalcartUi/ModalCartUi'
 import { productStyle } from "./productCss"
 
@@ -17,7 +17,8 @@ export class ProductUi extends LitElement {
       _selectedImage: { type: String },
       _modalOpen: { type: Boolean },
       _currentWidth: { type: Number },
-      _carouselIndex: { type: Number }
+      _carouselIndex: { type: Number },
+      _lightboxOpen: { type: Boolean },
     }
   }
 
@@ -35,6 +36,7 @@ export class ProductUi extends LitElement {
     this._currentWidth = getCurrentWidth();
     this._carouselIndex = 0;
     this._unsubscribe = null;
+    this._lightboxOpen = false;
   }
 
   connectedCallback() {
@@ -67,7 +69,7 @@ export class ProductUi extends LitElement {
       this._counter--;
       this.requestUpdate();
     }else {
-      alert('No es posible ejecutar esta acción :)');
+      alert('No es posible ejecutar esta acción');
     }
   }
 
@@ -94,8 +96,6 @@ export class ProductUi extends LitElement {
     const cart = JSON.parse(localStorage.getItem('cartItem')) || [];
     cart.push(item);
     localStorage.setItem('cartItems', JSON.stringify(cart));
-
-    alert('Se realizo de manera exitosa el pago!'); 
   }
 
   _handleCancel() {
@@ -120,11 +120,37 @@ export class ProductUi extends LitElement {
     this._set_mainImage(this.images[this._carouselIndex]);
   }
 
+  _openLightbox() {
+    this._lightboxOpen = true;
+  }
+  _closeLightbox() {
+    this._lightboxOpen = false;
+  }
+
   render() {
     const discountedPrice = (this.realPrice / 2).toFixed(2);
 
     return html`
       <section class="section">
+
+      ${this._currentWidth > 768 && this._lightboxOpen ? html`
+        <div class="lightbox-overlay" @click=${this._closeLightbox}>
+          <button class="lightbox-close" @click=${this._closeLightbox}>×</button>
+          <div class="lightbox-content" @click=${e => e.stopPropagation()}>
+            <button class="arrow left"  @click=${this._carouselPrev}>&lt;</button>
+            <img class="lightbox-img" src=${this._mainImage} alt="Zoom"/>
+            <button class="arrow right" @click=${this._carouselNext}>&gt;</button>
+          </div>
+          <div class="lightbox-thumbs">
+            ${this.images.map((img, i) => html`
+              <div class="thumb ${this._selectedImage===img?'selected':''}"
+                   @click=${() => { this._set_mainImage(img); this._carouselIndex = i; }}>
+                <img src=${img} alt="Mini"/>
+              </div>
+            `)}
+          </div>
+        </div>
+      ` : ''}
 
         <div class="section__row_1">
             ${this._currentWidth > 768 ? 
@@ -133,6 +159,7 @@ export class ProductUi extends LitElement {
                       class="section__row_1-img"
                       src=${this._mainImage}
                       alt="Imagen principal"
+                      @click=${this._openLightbox}
                     /> `
                 : html ``
             }

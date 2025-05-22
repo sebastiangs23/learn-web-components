@@ -1,5 +1,6 @@
 const resizeEventTarget = new EventTarget();
 
+//Se usa el objeto global window para detectar el width
 function emitResize() {
   resizeEventTarget.dispatchEvent(new CustomEvent('resize', { detail: window.innerWidth }));
 }
@@ -10,9 +11,10 @@ function getCurrentWidth() {
   return window.innerWidth;
 }
 
+//Detectar los cambios en tiempo real
 function subscribe(callback) {
   const handler = (e) => callback(e.detail);
-  resizeEventTarget.addEventListener('resize', handler);  //Detectar los cambios en tiempo real
+  resizeEventTarget.addEventListener('resize', handler);
   return () => resizeEventTarget.removeEventListener('resize', handler);
 }
 
