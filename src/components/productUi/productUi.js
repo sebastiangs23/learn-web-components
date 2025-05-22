@@ -64,6 +64,9 @@ export class ProductUi extends LitElement {
     this._selectedImage = img;
   }
 
+
+  /*_________________
+  | Buttons (Core) */
   _decrement() {
     if (this._counter > 1) {
       this._counter--;
@@ -78,6 +81,8 @@ export class ProductUi extends LitElement {
     this.requestUpdate();
   }
 
+  /*_________
+  |  Modal */
   _openModal() {
     this._modalOpen = true;
   }
@@ -102,6 +107,8 @@ export class ProductUi extends LitElement {
     this._modalOpen = false;
   }
 
+  /*___________
+  | Carousel */
   _carouselPrev() {
     if (this._carouselIndex > 0) {
       this._carouselIndex--;
@@ -120,11 +127,34 @@ export class ProductUi extends LitElement {
     this._set_mainImage(this.images[this._carouselIndex]);
   }
 
+  /*___________
+  | Lightbox */
   _openLightbox() {
     this._lightboxOpen = true;
   }
   _closeLightbox() {
     this._lightboxOpen = false;
+  }
+
+  get _renderLightBox(){
+    return html `${this._currentWidth > 768 && this._lightboxOpen ? html`
+      <div class="lightbox-overlay" @click=${this._closeLightbox}>
+        <button class="lightbox-close" @click=${this._closeLightbox}>×</button>
+        <div class="lightbox-content" @click=${e => e.stopPropagation()}>
+          <button class="arrow left"  @click=${this._carouselPrev}>&lt;</button>
+          <img class="lightbox-img" src=${this._mainImage} alt="Zoom"/>
+          <button class="arrow right" @click=${this._carouselNext}>&gt;</button>
+        </div>
+        <div class="lightbox-thumbs">
+          ${this.images.map((img, i) => html`
+            <div class="thumb ${this._selectedImage===img?'selected':''}"
+                 @click=${() => { this._set_mainImage(img); this._carouselIndex = i; }}>
+              <img src=${img} alt="Mini"/>
+            </div>
+          `)}
+        </div>
+      </div>
+    ` : ''}`
   }
 
   render() {
@@ -133,25 +163,8 @@ export class ProductUi extends LitElement {
     return html`
       <section class="section">
 
-      ${this._currentWidth > 768 && this._lightboxOpen ? html`
-        <div class="lightbox-overlay" @click=${this._closeLightbox}>
-          <button class="lightbox-close" @click=${this._closeLightbox}>×</button>
-          <div class="lightbox-content" @click=${e => e.stopPropagation()}>
-            <button class="arrow left"  @click=${this._carouselPrev}>&lt;</button>
-            <img class="lightbox-img" src=${this._mainImage} alt="Zoom"/>
-            <button class="arrow right" @click=${this._carouselNext}>&gt;</button>
-          </div>
-          <div class="lightbox-thumbs">
-            ${this.images.map((img, i) => html`
-              <div class="thumb ${this._selectedImage===img?'selected':''}"
-                   @click=${() => { this._set_mainImage(img); this._carouselIndex = i; }}>
-                <img src=${img} alt="Mini"/>
-              </div>
-            `)}
-          </div>
-        </div>
-      ` : ''}
-
+        ${this._renderLightBox}
+      
         <div class="section__row_1">
             ${this._currentWidth > 768 ? 
                 html `
