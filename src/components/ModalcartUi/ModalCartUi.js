@@ -1,5 +1,5 @@
 import { LitElement, html, css } from 'lit';
-import { modalStyle } from './modalCss';
+import { modalStyle } from './modal.css';
 
 export class ModalCart extends LitElement {
   static get properties() {
@@ -8,7 +8,7 @@ export class ModalCart extends LitElement {
       image: { type: String },
       quantity: { type: Number },
       totalPrice: { type: Number },
-      showAddButton: { type: Boolean }
+      modalType: { type: Number } //Type 1: Agregar al carrito  && Type 2: Mostrar lo que contiene el carrito 
     };
   }
 
@@ -31,6 +31,11 @@ export class ModalCart extends LitElement {
     this.open = false;
   }
 
+  _delete() {
+    this.dispatchEvent(new CustomEvent('modal-delete', { bubbles: true, composed: true }));
+    this.open = false;
+  }
+
   render() {
     if (!this.open) return html``;
 
@@ -43,10 +48,14 @@ export class ModalCart extends LitElement {
           <p>Total: <strong>$ ${this.totalPrice.toFixed(2)}</strong></p>
           <div class="modal-actions">
             <button class="btn-cancel" @click=${this._cancel}>Cancelar</button>
-            ${ this.showAddButton ? html `
+            ${ this.modalType === 1 ? html `
               <button class="btn-pay" @click=${this._add}>Agregar</button>`
               : html``
             }
+
+            ${ this.modalType === 2 ? html`
+                <button class="btn-delete" @click=${this._delete}>Eliminar</button>
+              ` : html`` }
           </div>
         </div>
       </div>

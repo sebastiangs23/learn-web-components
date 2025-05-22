@@ -156,7 +156,8 @@ export const productStyle = css`
         margin-bottom: 20px;
       }
 
-      /* Controles (contador + botón) */
+      /*_________________________________
+      |  CONTROLERS (CONTADOR Y BOTÓN) */
       .section__row-2-controls {
         display: flex;
         gap: 15px;
@@ -200,31 +201,53 @@ export const productStyle = css`
         color: #22252d;
       }
 
-      .section__row_2-button {
-        flex: 2;
-        display: flex;
-        justify-content: center;
+      .section__row_2-button-add-cart {
+        font-size: 1.2rem;
         align-items: center;
-        gap: 10px;
+        display: inline-flex;
+        justify-content: center;
+        border: 0px solid #1c1e21;
+        border-radius: 10px;
+        color: #1c1e21;
+        line-height: 16px;
+        overflow: hidden;
+        padding: 20px;
+        position: relative;
+        text-align: center;
+        transition: color 0.33s linear 0.5s, border-color ease-out 0.5s;
+        background-color: #cacaca9a;
+        white-space: pre;
+        z-index: 1;
+        font-family: "Kumbh Sans", sans-serif;
+      }
+
+      .section__row_2-button-add-cart:hover {
+        transition-delay: 0.5s;
+        color: #fff;
+        border: 0px;
+      }
+
+      .section__row_2-button-add-cart:hover:after {
+        transform: scale(1.47) translateY(0);
+      }
+
+      .section__row_2-button-add-cart:after {
         background-color: hsl(26, 100%, 55%);
-        border: none;
-        border-radius: 12px;
-        color: white;
-        font-weight: 700;
-        font-size: 1.1rem;
-        cursor: pointer;
-        padding: 15px 0;
-        box-shadow: 0 5px 15px rgba(255, 125, 26, 0.4);
-        transition: background-color 0.3s ease;
+        border-radius: 100%;
+        content: "";
+        height: 167px;
+        position: absolute;
+        top: 0;
+        transform: scale(1) translateY(67px);
+        transition: transform 1s cubic-bezier(0.66, 0, 0.34, 1);
+        width: 100%;
+        z-index: -1;
       }
 
-      .section__row_2-button img {
-        width: 20px;
-        height: 20px;
-      }
-
-      .section__row_2-button:hover {
-        background-color: hsl(26, 100%, 40%);
+      .section__row_2-button-add-cart img {
+        width: 27px;
+        height: 27px;
+        margin-right: 3px;
       }
 
       /*____________

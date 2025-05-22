@@ -2,7 +2,7 @@ import { LitElement, html } from "lit"
 import cart from '../../assets/svgs/icon-cart.svg'
 import { getCurrentWidth, subscribe } from "../../utils/functions/windowSize"
 import '../ModalcartUi/ModalCartUi'
-import { productStyle } from "./productCss"
+import { productStyle } from "./product.css"
 
 export class ProductUi extends LitElement {
   static get properties() {
@@ -64,9 +64,13 @@ export class ProductUi extends LitElement {
     this._selectedImage = img;
   }
 
-
   /*_________________
   | Buttons (Core) */
+  _increment() {
+    this._counter++;
+    this.requestUpdate();
+  }
+  
   _decrement() {
     if (this._counter > 1) {
       this._counter--;
@@ -74,11 +78,6 @@ export class ProductUi extends LitElement {
     }else {
       alert('No es posible ejecutar esta acción');
     }
-  }
-
-  _increment() {
-    this._counter++;
-    this.requestUpdate();
   }
 
   /*_________
@@ -101,10 +100,29 @@ export class ProductUi extends LitElement {
     const cart = JSON.parse(localStorage.getItem('cartItem')) || [];
     cart.push(item);
     localStorage.setItem('cartItems', JSON.stringify(cart));
+    window.dispatchEvent(new CustomEvent('cart-updated'));
   }
 
   _handleCancel() {
     this._modalOpen = false;
+  }
+
+  get _renderModal(){
+    return html `
+      <modal-cart
+        .modalType=${1}
+        .open=${this._modalOpen}
+        .image=${this._mainImage}
+        .quantity=${this._counter}
+        .totalPrice=${this.discount
+          ? (this.realPrice / 2) * this._counter
+          : this.realPrice * this._counter}
+        @modal-add=${this._handleAdd}
+        @modal-cancel=${this._handleCancel}
+      >
+          <h3 slot="title">Confirmar agregar al carrito: </h3>
+      </modal-cart>
+      `
   }
 
   /*___________
@@ -164,13 +182,14 @@ export class ProductUi extends LitElement {
       <section class="section">
 
         ${this._renderLightBox}
-      
+        ${this._renderModal}
+        
         <div class="section__row_1">
             ${this._currentWidth > 768 ? 
                 html `
                     <img
                       class="section__row_1-img"
-                      src=${this._mainImage}
+                      src=${this._mainImage !== '' ? this._mainImage : 'https://placehold.co/600x400'}
                       alt="Imagen principal"
                       @click=${this._openLightbox}
                     /> `
@@ -265,25 +284,13 @@ export class ProductUi extends LitElement {
               </button>
             </div>
 
-            <button class="section__row_2-button" @click=${this._openModal}>
+            <button class="section__row_2-button-add-cart" @click=${this._openModal}>
               <img src=${cart} alt="Icono carrito" />
               <span>Add to cart</span>
             </button>
           </div>
         </div>
 
-        <modal-cart
-          .open=${this._modalOpen}
-          .image=${this._mainImage}
-          .quantity=${this._counter}
-          .totalPrice=${this.discount
-            ? (this.realPrice / 2) * this._counter
-            : this.realPrice * this._counter}
-          @modal-add=${this._handleAdd}
-          @modal-cancel=${this._handleCancel}
-        >
-            <h3 slot="title">Confirmar agregar al carrito: </h3>
-        </modal-cart>
       </section>
     `;
   }

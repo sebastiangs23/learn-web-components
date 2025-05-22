@@ -29,7 +29,7 @@ export class ProductDm extends LitElement {
             }
 
             const data = await response.json();
-            this.product = data[18];
+            this.product = data[0];
 
             this.dispatchEvent(new CustomEvent('product-dm-success', {
                 detail: { products: this.product },

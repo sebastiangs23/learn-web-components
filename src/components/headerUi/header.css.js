@@ -88,6 +88,33 @@ export const headerStyle = css`
         border-radius: 2px;
       }
 
+      .header__cart-container {
+        position: relative; 
+      }
+
+      /*______________
+      |  Cart Badge */
+      .cart-badge {
+        font-family: "Kumbh Sans", sans-serif;
+        position: absolute;
+        top: -6px;
+        right: -6px;
+        background: red;
+        color: white;
+        font-size: 0.7rem;
+        font-weight: bold;
+        border-radius: 50%;
+        padding: 1px 3px;
+        min-width: 10px;
+        height: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 0 2px rgba(0,0,0,0.3);
+        user-select: none;
+        pointer-events: none; 
+      }
+
       @media (max-width: 768px) {
         .header__ul {
           display: none;

@@ -1,5 +1,5 @@
 import { html, LitElement } from "lit";
-import { footerStyles } from "./footerCss";
+import { footerStyles } from "./footer.css";
 
 export class FooterUi extends LitElement {
     constructor(){

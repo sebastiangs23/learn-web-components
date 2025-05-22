@@ -1,8 +1,8 @@
-import { LitElement, html } from "lit";
+import { LitElement, html, nothing } from "lit";
 import "../ModalcartUi/ModalCartUi";
 import cart from '../../assets/svgs/icon-cart.svg';
 import avatar from '../../assets/images/image-avatar.png';
-import { headerStyle } from "./headerCss";
+import { headerStyle } from "./header.css";
 import { header } from "../../utils/constants/constants";
 
 export class HeaderUi extends LitElement {
@@ -20,7 +20,41 @@ export class HeaderUi extends LitElement {
         this._cartItems = [];
     }
 
+    /*_______________________
+    | Watcher LocalStorage */
+    connectedCallback() {
+      super.connectedCallback();
+      window.addEventListener('storage', this._onStorageChange);
+      window.addEventListener('cart-updated', this._onCartUpdated);
+    }
+    
+    disconnectedCallback() {
+      window.removeEventListener('storage', this._onStorageChange);
+      window.removeEventListener('cart-updated', this._onCartUpdated);
+      super.disconnectedCallback();
+    }
+    
+    _onCartUpdated = () => {
+      const stored = localStorage.getItem('cartItems');
+      this._cartItems = stored ? JSON.parse(stored) : [];
+      this.requestUpdate();
+    }
+    
+    _onStorageChange = (event) => {
+      if (event.key === 'cartItems') {
+        try {
+          this._cartItems = event.newValue ? JSON.parse(event.newValue) : [];
+          this.requestUpdate();
+        } catch (e) {
+          console.error('Error parsing cartItems from storage event:', e);
+        }
+      }
+    }
+    
     firstUpdated() {
+      const stored = localStorage.getItem('cartItems');
+      this._cartItems = stored ? JSON.parse(stored) : [];
+
       const contactLink = this.shadowRoot.querySelector('a[href="#contact"]');
       if (contactLink) {
         contactLink.addEventListener('click', e => {
@@ -33,8 +67,9 @@ export class HeaderUi extends LitElement {
       }
     }
     
-
-    _toggleMenu() {
+    /*______________
+    |  Hamburguesa */
+    _toggleMenuHamburger() {
         this._menuOpen = !this._menuOpen;
         this.requestUpdate();
     }
@@ -54,26 +89,47 @@ export class HeaderUi extends LitElement {
       this._modalOpen = false;
     }
 
+    _handleDelete() {
+      if (!this._cartItems || this._cartItems.length === 0) return;
+    
+      // Ejemplo: eliminas el primer producto (o cambia según la lógica)
+      this._cartItems.splice(0, 1);
+    
+      // Actualizas localStorage
+      localStorage.setItem('cartItems', JSON.stringify(this._cartItems));
+    
+      // Actualizas el componente y cierras modal
+      this._modalOpen = false;
+      this.requestUpdate();
+    
+      // Opcional: disparar evento para sincronizar si hay otros componentes escuchando
+      window.dispatchEvent(new CustomEvent('cart-updated'));
+    }
+    
+
     render() {
-      const firstItem = this._cartItems && this._cartItems.length > 0 ? this._cartItems[0] : null;
+      const firstItem = this._cartItems && this._cartItems.length > 0 ? this._cartItems[0] : nothing;
+      const totalQuantity = this._cartItems ? this._cartItems.reduce((acc, item) => acc + (item.quantity || 0), 0) : 0;
 
         return html`
         <header class="header-container header--theme">
           <modal-cart
+            .modalType=${2}
             .open=${this._modalOpen}
-            .image=${firstItem ? firstItem.image : ''}
+            .image=${firstItem ? firstItem.image : 'https://placehold.co/600x400'}
             .quantity=${firstItem ? firstItem.quantity : 0}
             .totalPrice=${firstItem ? firstItem.totalPrice : 0}
             .showAddButton=${false}
             @modal-add=${this._handleAdd}
             @modal-cancel=${this._handleCancel}
+            @modal-delete=${this._handleDelete}
           >
           <h3 slot="title">Tu carrito: </h3>
         </modal-cart>
 
         <div class="header">
 
-          <div class="header__hamburger" @click=${this._toggleMenu}>
+          <div class="header__hamburger" @click=${this._toggleMenuHamburger}>
             <div></div>
             <div></div>
             <div></div>
@@ -89,9 +145,17 @@ export class HeaderUi extends LitElement {
                 `
             )}
           </ul> 
-
+  
           <div class="header__cart-container" >
-            <img class="header__cart" @click=${this._openModal} src=${cart} alt="icono del cart"/>
+            <img
+              class="header__cart"
+              @click=${this._openModal}
+              src=${cart}
+              alt="icono del cart"
+            />
+            ${totalQuantity > 0 ? html`
+              <span class="cart-badge">${totalQuantity}</span>
+            ` : ''}
           </div>
 
           <figure class="header__avatar-container">

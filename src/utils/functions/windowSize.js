@@ -1,6 +1,6 @@
 const resizeEventTarget = new EventTarget();
 
-//Se usa el objeto global window para detectar el width
+//A partir del objeto global window capturamos el width
 function emitResize() {
   resizeEventTarget.dispatchEvent(new CustomEvent('resize', { detail: window.innerWidth }));
 }
