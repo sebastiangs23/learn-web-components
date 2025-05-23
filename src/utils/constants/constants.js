@@ -18,5 +18,5 @@ export const header = [
     {
         name: 'Contact',
         href: '#contact',
-    }
+    },
 ]

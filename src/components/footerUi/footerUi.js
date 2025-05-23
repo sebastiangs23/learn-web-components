@@ -2,9 +2,6 @@ import { html, LitElement } from "lit";
 import { footerStyles } from "./footer.css";
 
 export class FooterUi extends LitElement {
-    constructor(){
-        super();
-    }
 
     render(){
         return html`

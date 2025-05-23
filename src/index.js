@@ -7,16 +7,16 @@ import './components/footerUi/footerUi.js'
 export class Index extends LitElement {
   static get properties() {
     return {
-      productToRender: { type: Object },
-      errorMessage: { type: String }
+      _products: { type: Object },
+      _errorMessage: { type: String }
     }
   }
 
   constructor() {
     super()
+    this._errorMessage = '';
+    this._products = {};
     this._host = "https://api.escuelajs.co/api/v1/products";
-    this.errorMessage = '';
-    this.productToRender = {};
   }
 
   firstUpdated(){
@@ -36,12 +36,12 @@ export class Index extends LitElement {
   }
 
   _handleProductDmSuccess(event){
-    this.productToRender = event.detail.products;
-    this.errorMessage = '';
+    this._products = event.detail.products;
+    this._errorMessage = '';
   }
 
   _handleProductDmError(event){
-    this.errorMessage = event.detail.message || 'Error desconocido';
+    this._errorMessage = event.detail.message || 'Error desconocido';
   }
 
   connectedCallback() {
@@ -60,15 +60,14 @@ export class Index extends LitElement {
         <header-ui></header-ui>
 
         <product-ui
-          .productId=${this.productToRender.id}
-          .images=${this.productToRender ? this.productToRender.images : []}
+          .productId=${this._products.id}
+          .images=${this._products ? this._products.images : []}
           .discount=${true}
-          .showAddButton=${true}
-          real-price=${this.productToRender.price}
+          real-price=${this._products.price}
           >
-          <h2 slot="campain-name">${this.productToRender ? this.productToRender.title : ''} </h2>
+          <h2 slot="campain-name">${this._products ? this._products.title : ''} </h2>
           <p slot="description" class="product-ui-description"> 
-            ${this.productToRender.description}
+            ${this._products.description}
           </p>
         </product-ui>
 

@@ -201,26 +201,27 @@ export const productStyle = css`
         color: #22252d;
       }
 
+      /*________________________
+      |  ADD BUTTON ANIMATION */
       .section__row_2-button-add-cart {
+        text-align: center;
         font-size: 1.2rem;
         align-items: center;
         display: inline-flex;
         justify-content: center;
+        font-family: "Kumbh Sans", sans-serif;
         border: 0px solid #1c1e21;
         border-radius: 10px;
         color: #1c1e21;
-        line-height: 16px;
-        overflow: hidden;
-        padding: 20px;
-        position: relative;
-        text-align: center;
-        transition: color 0.33s linear 0.5s, border-color ease-out 0.5s;
         background-color: #cacaca9a;
-        white-space: pre;
+        line-height: 16px;
+        padding: 20px;
+        overflow: hidden;
+        position: relative;
         z-index: 1;
-        font-family: "Kumbh Sans", sans-serif;
+        transition: color 0.33s linear 0.5s, border-color ease-out 0.5s;
       }
-
+      
       .section__row_2-button-add-cart:hover {
         transition-delay: 0.5s;
         color: #fff;

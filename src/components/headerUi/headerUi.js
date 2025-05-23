@@ -15,13 +15,13 @@ export class HeaderUi extends LitElement {
 
     constructor() {
         super();
-        this._menuOpen = false;
         this._modalOpen = false;
         this._cartItems = [];
+        this._menuOpen = false;
     }
 
-    /*_______________________
-    | Watcher LocalStorage */
+    /*______________________________
+    | Watcher LocalStorage + Cart */
     connectedCallback() {
       super.connectedCallback();
       window.addEventListener('storage', this._onStorageChange);
@@ -67,13 +67,6 @@ export class HeaderUi extends LitElement {
       }
     }
     
-    /*______________
-    |  Hamburguesa */
-    _toggleMenuHamburger() {
-        this._menuOpen = !this._menuOpen;
-        this.requestUpdate();
-    }
-
     _openModal(){
       this._cartItems =  JSON.parse(localStorage.getItem('cartItems'));
       console.log(this._cartItems);
@@ -92,20 +85,19 @@ export class HeaderUi extends LitElement {
     _handleDelete() {
       if (!this._cartItems || this._cartItems.length === 0) return;
     
-      // Ejemplo: eliminas el primer producto (o cambia según la lógica)
       this._cartItems.splice(0, 1);
-    
-      // Actualizas localStorage
-      localStorage.setItem('cartItems', JSON.stringify(this._cartItems));
-    
-      // Actualizas el componente y cierras modal
+      localStorage.setItem('cartItems', JSON.stringify(this._cartItems)); //Actualizar el localStorage
       this._modalOpen = false;
       this.requestUpdate();
-    
-      // Opcional: disparar evento para sincronizar si hay otros componentes escuchando
-      window.dispatchEvent(new CustomEvent('cart-updated'));
+      window.dispatchEvent(new CustomEvent('cart-updated')); //Disparar el evento, para los otros componentes escuchando
     }
-    
+
+    /*______________
+    |  Hamburguesa */
+    _toggleMenuHamburger() {
+      this._menuOpen = !this._menuOpen;
+      this.requestUpdate();
+    }
 
     render() {
       const firstItem = this._cartItems && this._cartItems.length > 0 ? this._cartItems[0] : nothing;
@@ -124,46 +116,46 @@ export class HeaderUi extends LitElement {
             @modal-cancel=${this._handleCancel}
             @modal-delete=${this._handleDelete}
           >
-          <h3 slot="title">Tu carrito: </h3>
-        </modal-cart>
+            <h3 slot="title">Tu carrito: </h3>
+          </modal-cart>
 
-        <div class="header">
+          <div class="header">
 
-          <div class="header__hamburger" @click=${this._toggleMenuHamburger}>
-            <div></div>
-            <div></div>
-            <div></div>
+            <div class="header__hamburger" @click=${this._toggleMenuHamburger}>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+
+            <p class="header__title">sneakers</p>
+
+            <ul class="header__ul ${this._menuOpen ? 'mobile-open' : ''}">
+              ${header.map((item) => html` 
+                    <li>
+                      <a href=${item.href}> ${item.name} </a>
+                    </li>
+                  `
+              )}
+            </ul> 
+            
+            <div class="header__cart-container" >
+              <img
+                class="header__cart"
+                @click=${this._openModal}
+                src=${cart}
+                alt="icono del cart"
+              />
+              ${totalQuantity > 0 ? html`
+                <span class="cart-badge">${totalQuantity}</span>
+              ` : nothing}
+            </div>
+
+            <figure class="header__avatar-container">
+              <img class="header__avatar" src=${avatar} alt="avatar del usuario" />
+            </figure>
           </div>
 
-          <p class="header__title">sneakers</p>
-
-          <ul class="header__ul ${this._menuOpen ? 'mobile-open' : ''}">
-            ${header.map((item) => html` 
-                  <li>
-                    <a href=${item.href}> ${item.name} </a>
-                  </li>
-                `
-            )}
-          </ul> 
-  
-          <div class="header__cart-container" >
-            <img
-              class="header__cart"
-              @click=${this._openModal}
-              src=${cart}
-              alt="icono del cart"
-            />
-            ${totalQuantity > 0 ? html`
-              <span class="cart-badge">${totalQuantity}</span>
-            ` : ''}
-          </div>
-
-          <figure class="header__avatar-container">
-            <img class="header__avatar" src=${avatar} alt="avatar del usuario" />
-          </figure>
-        </div>
-
-        <hr class="header__divider" />
+          <hr class="header__divider" />
       </header>
     `;
     }

@@ -1,4 +1,4 @@
-import { LitElement, html } from "lit"
+import { LitElement, html, nothing } from "lit"
 import cart from '../../assets/svgs/icon-cart.svg'
 import { getCurrentWidth, subscribe } from "../../utils/functions/windowSize"
 import '../ModalcartUi/ModalCartUi'
@@ -183,7 +183,7 @@ export class ProductUi extends LitElement {
 
         ${this._renderLightBox}
         ${this._renderModal}
-        
+
         <div class="section__row_1">
             ${this._currentWidth > 768 ? 
                 html `
@@ -193,7 +193,7 @@ export class ProductUi extends LitElement {
                       alt="Imagen principal"
                       @click=${this._openLightbox}
                     /> `
-                : html ``
+                : nothing
             }
 
           <div class="section__row_1-img-mini-container">
@@ -261,7 +261,7 @@ export class ProductUi extends LitElement {
 
           ${this.discount
             ? html`<p class="section__row-2-real-price">$ ${this.realPrice}</p>`
-            : ""}
+            : nothing}
 
           <div class="section__row-2-controls">
             <div class="section__row_2-_counter">
