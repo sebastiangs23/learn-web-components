@@ -13,10 +13,12 @@ export const productStyle = css`
         padding: 20px;
         max-width: 900px;
         margin: auto;
+        min-height: 60vh;
       }
 
       .section__row_1 {
         flex: 1;
+        
       }
 
       .section__row_1-img {
@@ -44,8 +46,8 @@ export const productStyle = css`
 
       .carousel-container img {
         border-radius: 12px;
-        width: 100%;
-        height: 100%;
+        min-height: 300px;
+        min-width: 300px;
         object-fit: cover;
       }
 

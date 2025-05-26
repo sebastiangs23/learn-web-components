@@ -3,6 +3,7 @@ import './components/headerUi/headerUi.js'
 import './components/productUi/productUi.js'
 import './components/dm/product-dm/productDm.js'
 import './components/footerUi/footerUi.js'
+import './index.css'
 
 export class Index extends LitElement {
   static get properties() {
@@ -54,7 +55,7 @@ export class Index extends LitElement {
 
   render() {
     return html`
-      <div>
+      <div class="layout">
         ${this._getRenderDm}
 
         <header-ui></header-ui>
@@ -71,7 +72,9 @@ export class Index extends LitElement {
           </p>
         </product-ui>
 
-        <footer-ui></footer-ui>
+        <div class="footer-container">
+          <footer-ui></footer-ui>
+        </div
 
       </div>
     `
